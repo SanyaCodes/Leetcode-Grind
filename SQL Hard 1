@@ -1,0 +1,57 @@
+## Consecutive Numbers
+
+# Question
+
+Table: Logs
+
++-------------+---------+
+| Column Name | Type    |
++-------------+---------+
+| id          | int     |
+| num         | varchar |
++-------------+---------+
+In SQL, id is the primary key for this table. id is an autoincrement column.
+Find all numbers that appear at least three times consecutively. Return the result table in any order. The result format is in the following example.
+
+
+Example 1:
+
+Input: 
+Logs table:
++----+-----+
+| id | num |
++----+-----+
+| 1  | 1   |
+| 2  | 1   |
+| 4  | 2   |
+| 5  | 1   |
+| 6  | 2   |
+| 7  | 2   |
++----+-----+
+Output: 
++-----------------+
+| ConsecutiveNums |
++-----------------+
+|                 |
++-----------------+
+Explanation: index 3 is missing hence there is no number that appears consecutively for at least three times.
+
+# Answer:
+
+with cte1 as(
+    select l1.id, l1.num as num1, l2.num as num2
+    from Logs l1
+    left join Logs l2
+    on l1.id+1 = l2.id
+    ),
+
+cte2 as(
+    select l3.id, l3.num1 as num1, l3.num2 as num2, l4.num as num3
+    from cte1 l3
+    left join Logs l4
+    on l3.id+2 = l4.id
+)
+
+select distinct(num1) as ConsecutiveNums
+from cte2
+where (num1 = num2) and (num1 = num3);
